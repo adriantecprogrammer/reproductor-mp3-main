@@ -1,5 +1,6 @@
 package com.example.application.reproduccion;
 
+import com.vaadin.flow.component.notification.Notification;
 import org.atmosphere.config.service.Message;
 
 import javax.sound.sampled.AudioInputStream;
@@ -9,66 +10,126 @@ import java.io.File;
 public class Reproduccion {
 //"C:\Users\agera\Music\Twenty One Pilots - Level of Concern (Audio).wav"
 
-    File archivos []=new File[3];
+    Cancion[] canciones=new Cancion[3];
+    AudioInputStream audioInputStream;
+    Clip clip ;
+    Boolean pausar=true;
 
     public Reproduccion(){
-        this.archivos=archivos;
+        canciones[0]=new Cancion();
+        canciones[1]=new Cancion();
+        canciones[2]=new Cancion();
         llenarArchivos();
+        llenarArtistas();
+        llenarTitulos();
     }
 
     public void llenarArchivos(){
         try {
-            archivos[0]=new File("C:\\Users\\agera\\Music\\Twenty One Pilots - Level of Concern (Audio).wav");
-            archivos[1]=new File("C:\\Users\\agera\\Music\\Cage The Elephant - Neon Pill (Audio).wav");
-            archivos[2]=new File("C:\\Users\\agera\\Music\\The Strokes - The Adults Are Talking (Official Audio).wav");
+            canciones[0].llenarCanciones("C:\\Users\\agera\\Music\\Twenty One Pilots - Level of Concern (Audio).wav");
+            canciones[1].llenarCanciones("C:\\Users\\agera\\Music\\Cage The Elephant - Neon Pill (Audio).wav");
+            canciones[2].llenarCanciones("C:\\Users\\agera\\Music\\The Strokes - The Adults Are Talking (Official Audio).wav");
         }catch (Exception e ){
             System.out.println("ERROR");
         }
 
     }
+    public void llenarTitulos(){
 
-    public void reproducir(int contador){
+        try {
+            canciones[0].setTitulo("Level of concern");
+            canciones[1].setTitulo("Neon Pill");
+            canciones[2].setTitulo("The Adults Are Talking");
+        }catch (Exception e){
+            Notification.show("Error en titulos");
+        }
+
+    }
+    public void llenarArtistas(){
+        try {
+            canciones[0].setArtista("Twenty one Pilots");
+            canciones[1].setArtista("Cage the Elephant");
+            canciones[2].setArtista("The Strokes");
+        }catch (Exception e){
+            Notification.show("Error en artistas ");
+        }
+    }
+
+    public void reproducir(int indice){
+        try {
+            /*
+            if(pausar==false){
+                clip.stop();
+            }else {
+                audioInputStream=AudioSystem.getAudioInputStream(canciones[indice].getArchivos());
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInputStream);
+                clip.start();
+
+
+            }
+            */
+            audioInputStream=AudioSystem.getAudioInputStream(canciones[indice].getArchivos());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+
+            if (pausar==false){
+                Notification.show("SEEEEE PAUSOOOO");
+                clip.close();
+                audioInputStream.close();
+            }
+
+
+        }catch (Exception e){
+
+        }
+
+    }
+    public void pausarCancion(boolean pausar){
+        pausar=pausar;
+    }
+
+    public void repr(int contador,boolean pausar){
         int indice=contador;
         boolean bandera=true;
 
 do {
 
         try {
-
             // Crea un objeto AudioInputStream que representa el flujo de entrada de audio
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(archivos[indice]);
-/*
-            if (indice>contador){
-                //clip.close();
-                audioInputStream.close();
-            }
-
- */
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(canciones[indice].getArchivos());
 
             // Obtiene el formato de audio del archivo
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
+            if(pausar==true){
 
-            // Reproduce el sonido
-            clip.start();
+                // Reproduce el sonido
+                clip.start();
 
 
-            // Espera hasta que se complete la reproducción
-            while (!clip.isRunning()) {
-                Thread.sleep(10);
+                // Espera hasta que se complete la reproducción
+                while (!clip.isRunning()) {
+                    Thread.sleep(10);
+                }
+                while (clip.isRunning()) {
+                    Thread.sleep(10);
+                }
+
+
+                // Cierra el flujo de audio
+                clip.close();
+                audioInputStream.close();
+                indice++;
+
+                if(indice>canciones.length-1){
+                    indice=0;
+                }
+            }else{
+                clip.stop();
             }
-            while (clip.isRunning()) {
-                Thread.sleep(10);
-            }
 
-            // Cierra el flujo de audio
-            clip.close();
-            audioInputStream.close();
-            indice++;
-
-            if(indice>archivos.length-1){
-                indice=0;
-            }
 
         }catch (Exception e){
 
