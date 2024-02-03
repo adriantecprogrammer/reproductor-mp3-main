@@ -14,6 +14,7 @@ public class Reproduccion {
     AudioInputStream audioInputStream;
     Clip clip ;
     Boolean pausar=true;
+   int  contador=0;
 
     public Reproduccion(){
         canciones[0]=new Cancion();
@@ -22,6 +23,8 @@ public class Reproduccion {
         llenarArchivos();
         llenarArtistas();
         llenarTitulos();
+        iniciarCancion(0);
+        this.clip=clip;
     }
 
     public void llenarArchivos(){
@@ -54,40 +57,53 @@ public class Reproduccion {
             Notification.show("Error en artistas ");
         }
     }
+    public void iniciarCancion(int indice){
 
-    public void reproducir(int indice){
+
         try {
-            /*
-            if(pausar==false){
-                clip.stop();
-            }else {
-                audioInputStream=AudioSystem.getAudioInputStream(canciones[indice].getArchivos());
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioInputStream);
-                clip.start();
 
-
-            }
-            */
-            audioInputStream=AudioSystem.getAudioInputStream(canciones[indice].getArchivos());
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-
-            if (pausar==false){
-                Notification.show("SEEEEE PAUSOOOO");
+            if(contador!=indice){
                 clip.close();
                 audioInputStream.close();
             }
+            if(indice==3){
+                indice=0;
+                Notification.show("AHORA ES CERO");
+            }
+            audioInputStream=AudioSystem.getAudioInputStream(canciones[indice].getArchivos());
+                clip = AudioSystem.getClip();
+                clip.open(audioInputStream);
+                Notification.show("Se inicio correctamente la cancion");
 
 
         }catch (Exception e){
-
+            Notification.show("No se inicio correctamente la cancion");
         }
+    }
+    public void reproducir(){
+try {
+    Notification.show("COMENZOOO A SONAR");
+    clip.start();
+
+}catch (Exception e){
+    Notification.show("UUUUU "+ e.getMessage());
+}
 
     }
     public void pausarCancion(boolean pausar){
-        pausar=pausar;
+        try {
+            clip.stop();
+        }catch (Exception e){
+            Notification.show(e.getMessage()+"ZZZZZ");
+        }
+
+    }
+
+    public String obtenerArtista(int indice){
+        return  canciones[indice].getArtista();
+    }
+    public String obtenerTitulo(int indice){
+        return  canciones[indice].getTitulo();
     }
 
     public void repr(int contador,boolean pausar){
