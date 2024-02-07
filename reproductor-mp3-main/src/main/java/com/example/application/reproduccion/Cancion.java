@@ -1,5 +1,7 @@
 package com.example.application.reproduccion;
 
+import com.vaadin.flow.component.html.Image;
+
 import java.io.File;
 
 public class Cancion {
@@ -8,11 +10,16 @@ public class Cancion {
    private String artista;
    private File archivos;
 
+   private String cover;
+
     public Cancion() {
 
     }
     public void llenarCanciones(String url){
         archivos=new File(url);
+    }
+    public void llenarCovers(String url){
+        cover=url;
     }
 
 
@@ -39,5 +46,13 @@ public class Cancion {
 
     public void setArchivos(File archivos) {
         this.archivos = archivos;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }
